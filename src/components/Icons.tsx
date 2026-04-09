@@ -436,6 +436,33 @@ const iconPaths: Record<string, React.ReactNode> = {
       <polyline points="35,45 50,55 65,45" />
       <path d="M35 65 L65 65" />
     </g>
+  ),
+  // Interactive tool icons
+  "graph-grid": (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="20" y="20" width="60" height="60" rx="2" />
+      <line x1="20" y1="50" x2="80" y2="50" strokeWidth="2" />
+      <line x1="50" y1="20" x2="50" y2="80" strokeWidth="2" />
+      <line x1="20" y1="35" x2="80" y2="35" />
+      <line x1="20" y1="65" x2="80" y2="65" />
+      <line x1="35" y1="20" x2="35" y2="80" />
+      <line x1="65" y1="20" x2="65" y2="80" />
+      <path d="M30 60 Q50 30 70 40" strokeWidth="2" fill="none" />
+    </g>
+  ),
+  radical: (
+    <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M35 55 L45 75 L55 45 L75 45" />
+      <line x1="55" y1="45" x2="55" y2="35" strokeWidth="1.5" />
+      <text x="60" y="38" fontSize="20" fill="currentColor" stroke="none">2</text>
+    </g>
+  ),
+  "bell-curve": (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="15" y1="75" x2="85" y2="75" strokeWidth="2" />
+      <path d="M15 75 Q35 75 50 35 Q65 75 85 75" strokeWidth="2" />
+      <line x1="50" y1="35" x2="50" y2="75" strokeDasharray="4,4" />
+    </g>
   )
 };
 

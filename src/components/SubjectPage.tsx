@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Link from "next/link";
 import Icon from "./Icons";
 import { type Subject, SUBJECT_THEMES } from "@/data/vault";
 import MathematicsModuleGrid, { ModuleModal } from "./MathematicsModuleGrid";
 import { type MathModule } from "@/data/mathematics";
+import dynamic from "next/dynamic";
 
 interface SubjectPageProps {
   subject: Subject;
@@ -17,10 +18,21 @@ const TEXT_DARK = "#2F3327";
 
 type TabType = "topics" | "papers" | "interactive";
 
+// Lazy load the graphing calculator for performance
+const LazyGraphingCalculator = dynamic(() => import("./GraphingCalculator"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse text-deep-olive">Loading calculator...</div>
+    </div>
+  )
+});
+
 export default function SubjectPage({ subject }: SubjectPageProps) {
   const [activeTab, setActiveTab] = useState<TabType>("topics");
   const [selectedModule, setSelectedModule] = useState<MathModule | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTool, setActiveTool] = useState<string | null>(null);
 
   // Handle Mathematics module selection
   const handleModuleSelect = (module: MathModule) => {
@@ -35,6 +47,15 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
 
   // Check if this is the Mathematics subject
   const isMathematics = subject.id === "mathematics";
+
+  // Handle interactive tool activation
+  const activateTool = useCallback((toolId: string) => {
+    setActiveTool(toolId);
+  }, []);
+
+  const deactivateTool = useCallback(() => {
+    setActiveTool(null);
+  }, []);
 
   // Get subject theme
   const subjectTheme = subject.id === "mathematics" ? SUBJECT_THEMES.mathematics :
@@ -377,51 +398,46 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
           {activeTab === "interactive" && (
             <div className="animate-fade-in">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {subject.resources.map((resource, index) => (
-                  <div
-                    key={resource.id}
-                    className="glass rounded-xl overflow-hidden card-hover group cursor-pointer border border-[#3B3F30]/20"
-                  >
+                {subject.resources.map((resource, index) => {
+                  const isGraphingCalculator = resource.id === "math-sim-1" && subject.id === "mathematics";
+                  
+                  return (
                     <div
-                      className="h-40 flex items-center justify-center relative overflow-hidden"
-                      style={{ backgroundColor: `${subject.accentColor}15` }}
+                      key={resource.id}
+                      onClick={() => isGraphingCalculator ? activateTool(resource.id) : undefined}
+                      className="glass rounded-xl overflow-hidden card-hover group cursor-pointer border border-[#3B3F30]/20"
                     >
                       <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{
-                          background: `linear-gradient(135deg, ${subject.accentColor}20, transparent)`,
-                        }}
-                      />
-                      <div className="transition-transform duration-300 group-hover:scale-110">
-                        <Icon name={resource.icon} size={48} color={subject.accentColor} />
+                        className="h-40 flex items-center justify-center relative overflow-hidden"
+                        style={{ backgroundColor: `${subject.accentColor}15` }}
+                      >
+                        <div
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          style={{
+                            background: `linear-gradient(135deg, ${subject.accentColor}20, transparent)`,
+                          }}
+                        />
+                        <div className="transition-transform duration-300 group-hover:scale-110">
+                          <Icon name={resource.icon} size={48} color={subject.accentColor} />
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <h3 
+                          className="font-serif text-lg mb-2"
+                          style={{ color: HEADER_DARK }}
+                        >
+                          {resource.title}
+                        </h3>
+                        <p 
+                          className="text-sm font-medium"
+                          style={{ color: TEXT_DARK }}
+                        >
+                          {resource.description}
+                        </p>
                       </div>
                     </div>
-                    <div className="p-6">
-                      <h3 
-                        className="font-serif text-lg mb-2"
-                        style={{ color: HEADER_DARK }}
-                      >
-                        {resource.title}
-                      </h3>
-                      <p 
-                        className="text-sm mb-4 font-medium"
-                        style={{ color: TEXT_DARK }}
-                      >
-                        {resource.description}
-                      </p>
-                      <button
-                        className="w-full py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90"
-                        style={{
-                          backgroundColor: `${subject.accentColor}20`,
-                          color: "#2F3327",
-                        }}
-                      >
-                        <Icon name="play-circle" size={16} />
-                        Launch
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -476,6 +492,15 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
           isOpen={isModalOpen}
           onClose={closeModal}
           theme={subjectTheme}
+        />
+      )}
+
+      {/* Graphing Calculator - Full-screen tool with lazy loading */}
+      {activeTool === "math-sim-1" && isMathematics && (
+        <LazyGraphingCalculator
+          theme={subjectTheme}
+          isVisible={true}
+          onClose={deactivateTool}
         />
       )}
     </main>

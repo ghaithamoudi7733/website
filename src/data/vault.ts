@@ -277,9 +277,9 @@ export const vaultData = {
         { id: "math-2021", title: "Mathematics 2021", description: "Advanced Level Examination", icon: "file-text", type: "past_paper", date: "2021", difficulty: "advanced" }
       ],
       resources: [
-        { id: "math-sim-1", title: "Graphing Calculator", description: "Interactive function plotting.", icon: "play-circle", type: "interactive" },
-        { id: "math-sim-2", title: "Equation Solver", description: "Step-by-step solution visualizer.", icon: "play-circle", type: "interactive" },
-        { id: "math-sim-3", title: "Statistical Distributions", description: "Probability distribution explorer.", icon: "play-circle", type: "interactive" }
+        { id: "math-sim-1", title: "Graphing Calculator", description: "Interactive function plotting.", icon: "graph-grid", type: "interactive" },
+        { id: "math-sim-2", title: "Equation Solver", description: "Step-by-step solution visualizer.", icon: "radical", type: "interactive" },
+        { id: "math-sim-3", title: "Statistical Distributions", description: "Probability distribution explorer.", icon: "bell-curve", type: "interactive" }
       ]
     }
   ] as Subject[],
