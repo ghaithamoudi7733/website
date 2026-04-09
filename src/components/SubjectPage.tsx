@@ -16,9 +16,9 @@ interface SubjectPageProps {
 const HEADER_DARK = "#1A1C16";
 const TEXT_DARK = "#2F3327";
 
-type TabType = "topics" | "papers" | "interactive";
+type TabType = "topics" | "interactive";
 
-// Lazy load interactive tools for performance
+// Lazy load interactive tools for performance - ALL subjects
 const LazyGraphingCalculator = dynamic(() => import("./GraphingCalculator"), {
   ssr: false,
   loading: () => (
@@ -46,6 +46,64 @@ const LazyStatisticalDistributions = dynamic(() => import("./StatisticalDistribu
   )
 });
 
+// Physics tools
+const LazyProjectileSimulator = dynamic(() => import("./ProjectileSimulator"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.physics.primary }}>Loading simulator...</div>
+    </div>
+  )
+});
+
+const LazyCircuitBuilder = dynamic(() => import("./CircuitBuilder"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.physics.primary }}>Loading circuit...</div>
+    </div>
+  )
+});
+
+// Biology tools
+const LazyCellDivisionSimulator = dynamic(() => import("./CellDivisionSimulator"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.biology.primary }}>Loading simulator...</div>
+    </div>
+  )
+});
+
+const LazyGeneticsCalculator = dynamic(() => import("./GeneticsCalculator"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.biology.primary }}>Loading calculator...</div>
+    </div>
+  )
+});
+
+// Chemistry tools
+const LazyPeriodicTableExplorer = dynamic(() => import("./PeriodicTableExplorer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.chemistry.primary }}>Loading periodic table...</div>
+    </div>
+  )
+});
+
+// Additional Physics tools
+const LazyWaveInterferenceSimulator = dynamic(() => import("./WaveInterferenceSimulator"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.physics.primary }}>Loading wave simulator...</div>
+    </div>
+  )
+});
+
 export default function SubjectPage({ subject }: SubjectPageProps) {
   const [activeTab, setActiveTab] = useState<TabType>("topics");
   const [selectedModule, setSelectedModule] = useState<MathModule | null>(null);
@@ -66,32 +124,55 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
   // Check if this is the Mathematics subject
   const isMathematics = subject.id === "mathematics";
 
-  // Handle interactive tool activation
+  // Handle interactive tool activation - now for ALL subjects
   const activateTool = useCallback((toolId: string) => {
-    // Only allow tool activation for mathematics subject
-    if (subject.id === "mathematics") {
-      setActiveTool(toolId);
-    }
-  }, [subject.id]);
+    setActiveTool(toolId);
+  }, []);
 
   const deactivateTool = useCallback(() => {
     setActiveTool(null);
   }, []);
   
-  // Get the active tool component
+  // Get the active tool component - now handles ALL subjects
   const renderActiveTool = () => {
-    if (subject.id !== "mathematics") return null;
-    
-    switch (activeTool) {
-      case "math-sim-1":
-        return <LazyGraphingCalculator theme={subjectTheme} isVisible={true} onClose={deactivateTool} />;
-      case "math-sim-2":
-        return <LazyEquationSolver theme={subjectTheme} isVisible={true} onClose={deactivateTool} />;
-      case "math-sim-3":
-        return <LazyStatisticalDistributions theme={subjectTheme} isVisible={true} onClose={deactivateTool} />;
-      default:
-        return null;
+    if (!activeTool) return null;
+
+    // Mathematics tools
+    if (activeTool === "math-sim-1") {
+      return <LazyGraphingCalculator theme={SUBJECT_THEMES.mathematics} isVisible={true} onClose={deactivateTool} />;
     }
+    if (activeTool === "math-sim-2") {
+      return <LazyEquationSolver theme={SUBJECT_THEMES.mathematics} isVisible={true} onClose={deactivateTool} />;
+    }
+    if (activeTool === "math-sim-3") {
+      return <LazyStatisticalDistributions theme={SUBJECT_THEMES.mathematics} isVisible={true} onClose={deactivateTool} />;
+    }
+
+    // Physics tools
+    if (activeTool === "sim-1") {
+      return <LazyProjectileSimulator theme={SUBJECT_THEMES.physics} isVisible={true} onClose={deactivateTool} />;
+    }
+    if (activeTool === "sim-2") {
+      return <LazyCircuitBuilder theme={SUBJECT_THEMES.physics} isVisible={true} onClose={deactivateTool} />;
+    }
+    if (activeTool === "sim-3") {
+      return <LazyWaveInterferenceSimulator theme={SUBJECT_THEMES.physics} isVisible={true} onClose={deactivateTool} />;
+    }
+
+    // Biology tools
+    if (activeTool === "bio-sim-1") {
+      return <LazyCellDivisionSimulator theme={SUBJECT_THEMES.biology} isVisible={true} onClose={deactivateTool} />;
+    }
+    if (activeTool === "bio-sim-2") {
+      return <LazyGeneticsCalculator theme={SUBJECT_THEMES.biology} isVisible={true} onClose={deactivateTool} />;
+    }
+
+    // Chemistry tools
+    if (activeTool === "chem-sim-1") {
+      return <LazyPeriodicTableExplorer theme={SUBJECT_THEMES.chemistry} isVisible={true} onClose={deactivateTool} />;
+    }
+
+    return null;
   };
 
   // Get subject theme
@@ -100,36 +181,29 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                        subject.id === "chemistry" ? SUBJECT_THEMES.chemistry :
                        SUBJECT_THEMES.physics;
 
-  // Build tabs - only Topics and Interactive (no Past Papers)
-  const getTabs = () => {
-    const tabs: Array<{ id: TabType; label: string; icon: string }> = [
-      { 
-        id: "topics", 
-        label: isMathematics ? "Module Grid" : "Topics & Notes", 
-        icon: isMathematics ? "calculator" : "book" 
-      },
-      { 
-        id: "interactive", 
-        label: "Interactive Tools", 
-        icon: "play-circle" 
-      },
-    ];
-    
-    return tabs;
-  };
-
-  const tabs = getTabs();
+  // Build tabs - only Topics and Interactive
+  const tabs: Array<{ id: TabType; label: string; icon: string }> = [
+    { 
+      id: "topics", 
+      label: isMathematics ? "Module Grid" : "Topics & Notes", 
+      icon: isMathematics ? "calculator" : "book" 
+    },
+    { 
+      id: "interactive", 
+      label: "Interactive Tools", 
+      icon: "play-circle" 
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-warm-beige">
-      {/* Hero Section - Mathematics A-Level Vault */}
+      {/* Hero Section */}
       <section
         className="relative pt-32 lg:pt-40 pb-16 overflow-hidden border-b border-[#3B3F30]/10"
         style={{ backgroundColor: isMathematics ? "#E6E0D0" : `${subject.accentColor}08` }}
       >
-        {/* Decorative Elements - EmeraldMath Style */}
+        {/* Decorative Elements */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Olive ambient glow at 5% opacity for professional atmosphere */}
           <div
             className="absolute top-20 right-[10%] w-64 h-64 rounded-full blur-3xl"
             style={{ backgroundColor: "#3B3F30", opacity: isMathematics ? 0.05 : 0.3 }}
@@ -138,7 +212,6 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
             className="absolute bottom-0 left-[5%] w-48 h-48 rounded-full blur-2xl"
             style={{ backgroundColor: "#3B3F30", opacity: isMathematics ? 0.05 : 0.2 }}
           />
-          {/* Micro dot grid pattern for EmeraldMath aesthetic */}
           <div 
             className="absolute inset-0 opacity-[0.02]"
             style={{
@@ -158,9 +231,8 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
             <span style={{ color: TEXT_DARK }}>{subject.name}</span>
           </nav>
 
-          {/* Subject Header - Near-black olive for maximum impact */}
+          {/* Subject Header */}
           <div className="flex flex-col lg:flex-row lg:items-start lg:gap-12">
-            {/* Icon Block - Calculator with enhanced stroke weight */}
             <div
               className="w-24 h-24 lg:w-32 lg:h-32 rounded-2xl flex items-center justify-center mb-6 lg:mb-0 animate-fade-in-up border border-[#3B3F30]/10"
               style={{ backgroundColor: isMathematics ? "rgba(201, 184, 150, 0.15)" : `${subject.accentColor}20` }}
@@ -172,7 +244,6 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
               />
             </div>
 
-            {/* Title Block */}
             <div className="flex-1 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
               <h1 
                 className="font-serif text-4xl lg:text-6xl mb-4"
@@ -189,36 +260,15 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                   : subject.description
                 }
               </p>
-              {/* Stats Bar - Accurate data for Mathematics Vault */}
               <div className="flex flex-wrap gap-4 text-sm font-semibold" style={{ color: "#2F3327" }}>
                 <span className="flex items-center gap-2">
                   <Icon name="book" size={16} color="#3B3F30" />
-                  6 Modules
+                  {isMathematics ? "6 Modules" : `${subject.topics.length} Topics`}
                 </span>
-                {isMathematics && (
-                  <>
-                    <span className="flex items-center gap-2">
-                      <Icon name="file-text" size={16} color="#3B3F30" />
-                      124 Past Papers
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <Icon name="document-notes" size={16} color="#3B3F30" />
-                      Notes Vault
-                    </span>
-                  </>
-                )}
-                {!isMathematics && (
-                  <>
-                    <span className="flex items-center gap-2">
-                      <Icon name="file-text" size={16} color="#3B3F30" />
-                      {subject.pastPapers.length} Past Papers
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <Icon name="play-circle" size={16} color="#3B3F30" />
-                      {subject.resources.length} Interactive
-                    </span>
-                  </>
-                )}
+                <span className="flex items-center gap-2">
+                  <Icon name="play-circle" size={16} color="#3B3F30" />
+                  {subject.resources.length} Interactive
+                </span>
               </div>
             </div>
           </div>
@@ -256,12 +306,11 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
       {/* Content Grid */}
       <section className="section-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Topics Tab - Shows EmeraldMath Grid for Mathematics */}
+          {/* Topics Tab */}
           {activeTab === "topics" && (
             <div className="animate-fade-in">
               {isMathematics ? (
                 <>
-                  {/* Section Header - Near-black for maximum impact */}
                   <div className="mb-8">
                     <h2 
                       className="font-serif text-2xl mb-2"
@@ -329,23 +378,19 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
             </div>
           )}
 
-
-
-          {/* Interactive Tab */}
+          {/* Interactive Tab - NOW FOR ALL SUBJECTS */}
           {activeTab === "interactive" && (
             <div className="animate-fade-in">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {subject.resources.map((resource) => {
-                  // Only clickable tools for mathematics
-                  const isClickable = subject.id === "mathematics";
+                  // ALL tools are now clickable
+                  const isClickable = true;
                   
                   return (
                     <div
                       key={resource.id}
-                      onClick={() => isClickable ? activateTool(resource.id) : undefined}
-                      className={`glass rounded-xl overflow-hidden card-hover border transition-all duration-300 ${
-                        isClickable ? "cursor-pointer group hover:shadow-xl" : ""
-                      }`}
+                      onClick={() => activateTool(resource.id)}
+                      className="glass rounded-xl overflow-hidden card-hover border transition-all duration-300 cursor-pointer group hover:shadow-xl"
                       style={{ 
                         borderColor: `${subjectTheme.primary}20`,
                         borderWidth: "1px"
@@ -355,7 +400,6 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                         className="h-40 flex items-center justify-center relative overflow-hidden"
                         style={{ backgroundColor: `${subjectTheme.primary}10` }}
                       >
-                        {/* Hover overlay with crimson tint */}
                         <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           style={{
@@ -379,14 +423,12 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                         >
                           {resource.description}
                         </p>
-                        {isClickable && (
-                          <div className="mt-4 flex items-center gap-2 text-sm" style={{ color: subjectTheme.primary }}>
-                            <span className="font-semibold">Click to launch</span>
-                            <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: `${subjectTheme.primary}20` }}>
-                              <Icon name="arrow" size={12} color={subjectTheme.primary} />
-                            </div>
+                        <div className="mt-4 flex items-center gap-2 text-sm" style={{ color: subjectTheme.primary }}>
+                          <span className="font-semibold">Click to launch</span>
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: `${subjectTheme.primary}20` }}>
+                            <Icon name="arrow" size={12} color={subjectTheme.primary} />
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -448,7 +490,7 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
         />
       )}
 
-      {/* Active Interactive Tool */}
+      {/* Active Interactive Tool - Now for ALL subjects */}
       {renderActiveTool()}
     </main>
   );
