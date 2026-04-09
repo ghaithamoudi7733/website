@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Icon from "./Icons";
 import { MATHEMATICS_MODULES, type MathModule, type YearData, getModuleNotes } from "@/data/mathematics";
 
@@ -10,7 +10,8 @@ interface MathematicsModuleGridProps {
 
 export default function MathematicsModuleGrid({ onModuleSelect }: MathematicsModuleGridProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    // 3-column grid for 6 cards (3x2 layout) - optimal for remaining modules
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {MATHEMATICS_MODULES.map((module, index) => (
         <ModuleCard
           key={module.id}
@@ -29,7 +30,7 @@ interface ModuleCardProps {
   index: number;
 }
 
-// Deep Charcoal-Olive for high contrast text
+// Deep Charcoal-Olive for high contrast text - WCAG AA compliant
 const TEXT_DARK = "#2F3327";
 const HEADER_DARK = "#1A1C16";
 const MUTED_GOLD = "#B8A47C";
@@ -41,7 +42,7 @@ function ModuleCard({ module, onSelect, index }: ModuleCardProps) {
       className="group relative w-full text-left animate-fade-in-up"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      {/* Card Container - 20% opacity olive border for clear definition */}
+      {/* Card Container - 20% opacity olive border for clear definition against beige background */}
       <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 border border-[#3B3F30]/20 overflow-hidden transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-xl group-hover:shadow-[#3B3F30]/10">
         
         {/* Muted Gold/Bronze Watermark Background - visible but not distracting */}
@@ -55,11 +56,11 @@ function ModuleCard({ module, onSelect, index }: ModuleCardProps) {
 
         {/* Content */}
         <div className="relative z-10">
-          {/* Module Code Badge - Serif font, significantly darker as primary anchor */}
+          {/* Module Code Badge - Serif font, significantly darker as primary visual anchor */}
           <div className="mb-4">
             <span 
               className="text-4xl font-serif font-bold tracking-tight"
-              style={{ color: TEXT_DARK }}
+              style={{ color: HEADER_DARK }}
             >
               {module.code}
             </span>
@@ -81,7 +82,7 @@ function ModuleCard({ module, onSelect, index }: ModuleCardProps) {
             {module.description}
           </p>
 
-          {/* Topic Count - matches description darkness */}
+          {/* Topic Count - matches description darkness for consistency */}
           <div className="flex items-center justify-between">
             <span 
               className="text-xs font-medium"
@@ -90,12 +91,13 @@ function ModuleCard({ module, onSelect, index }: ModuleCardProps) {
               {module.topics.length} topics
             </span>
             
-            {/* Chevron Button - State 1: 5% olive bg + 1px border, State 2: solid olive bg on hover */}
+            {/* Chevron Button - Enhanced hover states */}
+            {/* State 1: 5% olive bg + 25% border */}
+            {/* State 2: solid olive bg + white icon on hover */}
             <div 
               className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 border bg-[#3B3F30]/5 border-[#3B3F30]/25 group-hover:bg-[#3B3F30] group-hover:border-[#3B3F30]"
-              style={{ color: TEXT_DARK }}
             >
-              <div className="group-hover:text-white transition-colors duration-300">
+              <div className="text-[#2F3327] group-hover:text-white transition-colors duration-300">
                 <Icon name="chevron-right" size={20} />
               </div>
             </div>
@@ -121,26 +123,56 @@ export function ModuleModal({ module, isOpen, onClose }: ModuleModalProps) {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"papers" | "notes">("papers");
   const [expandedSeries, setExpandedSeries] = useState<string | null>("June");
+  
+  // Ref for the modal container to detect clicks outside
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+      // Prevent scrolling on body when modal is open
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen, onClose]);
+
+  // Handle click outside modal to close
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close if clicking the backdrop (not the modal content)
+    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      onClose();
+    }
+  };
 
   if (!isOpen || !module) return null;
 
   const years = module.years;
   const notes = getModuleNotes(module.code);
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
       onClick={handleBackdropClick}
     >
-      {/* Backdrop with blur */}
+      {/* Backdrop with blur - click to close */}
       <div className="absolute inset-0 bg-[#1A1C16]/40 backdrop-blur-sm" />
 
-      {/* Modal Container */}
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden animate-fade-in-scale">
+      {/* Modal Container - click-away protection */}
+      <div 
+        ref={modalRef}
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden animate-fade-in-scale"
+      >
         {/* Modal Card */}
         <div className="bg-cream/98 backdrop-blur-xl rounded-3xl shadow-2xl border border-[#3B3F30]/15 overflow-hidden">
           
@@ -165,6 +197,7 @@ export function ModuleModal({ module, isOpen, onClose }: ModuleModalProps) {
               <button
                 onClick={onClose}
                 className="p-2 rounded-full hover:bg-[#3B3F30]/10 transition-colors duration-200"
+                aria-label="Close modal"
               >
                 <Icon name="x-icon" size={24} color={TEXT_DARK} />
               </button>

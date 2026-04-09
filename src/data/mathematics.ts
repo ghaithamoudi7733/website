@@ -34,6 +34,7 @@ export const SERIES_NAMES = ["January", "June", "October"] as const;
 export const YEARS_RANGE = [2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017] as const;
 
 // Mathematics modules configuration
+// Grid contains 6 modules: P1, P2, P3, P4, S1, M1
 export const MATHEMATICS_MODULES: MathModule[] = [
   {
     id: "pure-1",
@@ -91,17 +92,6 @@ export const MATHEMATICS_MODULES: MathModule[] = [
     years: generateYearData(2017, 2026)
   },
   {
-    id: "stats-2",
-    code: "S2",
-    name: "Statistics 2",
-    fullName: "Statistics 2 - Advanced Statistics",
-    description: "Continuous random variables, sampling, hypothesis testing, Poisson distribution",
-    watermark: "chi-square",
-    accentColor: "#9B8B7A",
-    topics: ["Continuous Random Variables", "Sampling", "Hypothesis Testing", "Poisson Distribution", "Linear Combinations"],
-    years: generateYearData(2017, 2026)
-  },
-  {
     id: "mechanics-1",
     code: "M1",
     name: "Mechanics 1",
@@ -110,17 +100,6 @@ export const MATHEMATICS_MODULES: MathModule[] = [
     watermark: "velocity",
     accentColor: "#8B9D77",
     topics: ["Forces & Equilibrium", "Kinematics", "Newton's Laws", "Work & Energy", "Momentum"],
-    years: generateYearData(2017, 2026)
-  },
-  {
-    id: "mechanics-2",
-    code: "M2",
-    name: "Mechanics 2",
-    fullName: "Mechanics 2 - Advanced Mechanics",
-    description: "Motion in a circle, centers of mass, rigid bodies, elastic strings, simple harmonic motion",
-    watermark: "acceleration",
-    accentColor: "#8B9D77",
-    topics: ["Circular Motion", "Centers of Mass", "Rigid Bodies", "Elastic Strings", "Simple Harmonic Motion"],
     years: generateYearData(2017, 2026)
   }
 ];
