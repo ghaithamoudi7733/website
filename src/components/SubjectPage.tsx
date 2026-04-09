@@ -62,20 +62,21 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
 
   return (
     <main className="min-h-screen bg-warm-beige">
-      {/* Hero Section */}
+      {/* Hero Section - Mathematics A-Level Vault */}
       <section
-        className="relative pt-32 lg:pt-40 pb-16 overflow-hidden"
-        style={{ backgroundColor: `${subject.accentColor}08` }}
+        className="relative pt-32 lg:pt-40 pb-16 overflow-hidden border-b border-[#3B3F30]/10"
+        style={{ backgroundColor: isMathematics ? "#E6E0D0" : `${subject.accentColor}08` }}
       >
         {/* Decorative Elements - EmeraldMath Style */}
         <div className="absolute inset-0 pointer-events-none">
+          {/* Olive ambient glow at 5% opacity for professional atmosphere */}
           <div
-            className="absolute top-20 right-[10%] w-64 h-64 rounded-full blur-3xl opacity-30"
-            style={{ backgroundColor: subject.accentColor }}
+            className="absolute top-20 right-[10%] w-64 h-64 rounded-full blur-3xl"
+            style={{ backgroundColor: "#3B3F30", opacity: isMathematics ? 0.05 : 0.3 }}
           />
           <div
-            className="absolute bottom-0 left-[5%] w-48 h-48 rounded-full blur-2xl opacity-20"
-            style={{ backgroundColor: subject.accentColor }}
+            className="absolute bottom-0 left-[5%] w-48 h-48 rounded-full blur-2xl"
+            style={{ backgroundColor: "#3B3F30", opacity: isMathematics ? 0.05 : 0.2 }}
           />
           {/* Micro dot grid pattern for EmeraldMath aesthetic */}
           <div 
@@ -99,12 +100,16 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
 
           {/* Subject Header - Near-black olive for maximum impact */}
           <div className="flex flex-col lg:flex-row lg:items-start lg:gap-12">
-            {/* Icon Block */}
+            {/* Icon Block - Calculator with enhanced stroke weight */}
             <div
-              className="w-24 h-24 lg:w-32 lg:h-32 rounded-2xl flex items-center justify-center mb-6 lg:mb-0 animate-fade-in-up"
-              style={{ backgroundColor: `${subject.accentColor}20` }}
+              className="w-24 h-24 lg:w-32 lg:h-32 rounded-2xl flex items-center justify-center mb-6 lg:mb-0 animate-fade-in-up border border-[#3B3F30]/10"
+              style={{ backgroundColor: isMathematics ? "rgba(201, 184, 150, 0.15)" : `${subject.accentColor}20` }}
             >
-              <Icon name={subject.icon} size={64} color={subject.accentColor} />
+              <Icon 
+                name={subject.icon} 
+                size={64} 
+                color={isMathematics ? "#3B3F30" : subject.accentColor}
+              />
             </div>
 
             {/* Title Block */}
@@ -119,21 +124,41 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                 className="text-lg max-w-2xl leading-relaxed mb-6 font-medium"
                 style={{ color: TEXT_DARK }}
               >
-                {subject.description}
+                {isMathematics 
+                  ? "A comprehensive archive of Pure Mathematics (P1-P4), Statistics (S1), and Mechanics (M1), featuring structured past papers, mark schemes, and curated revision notes."
+                  : subject.description
+                }
               </p>
-              <div className="flex flex-wrap gap-4 text-sm font-medium" style={{ color: "rgba(47, 51, 39, 0.7)" }}>
+              {/* Stats Bar - Accurate data for Mathematics Vault */}
+              <div className="flex flex-wrap gap-4 text-sm font-semibold" style={{ color: "#2F3327" }}>
                 <span className="flex items-center gap-2">
-                  <Icon name="book" size={16} />
-                  {isMathematics ? 8 : subject.topics.length} {isMathematics ? "Modules" : "Topics"}
+                  <Icon name="book" size={16} color="#3B3F30" />
+                  6 Modules
                 </span>
-                <span className="flex items-center gap-2">
-                  <Icon name="file-text" size={16} />
-                  {subject.pastPapers.length * (isMathematics ? 3 : 1)} Past Papers
-                </span>
-                <span className="flex items-center gap-2">
-                  <Icon name="play-circle" size={16} />
-                  {subject.resources.length} Interactive
-                </span>
+                {isMathematics && (
+                  <>
+                    <span className="flex items-center gap-2">
+                      <Icon name="file-text" size={16} color="#3B3F30" />
+                      124 Past Papers
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <Icon name="document-notes" size={16} color="#3B3F30" />
+                      Notes Vault
+                    </span>
+                  </>
+                )}
+                {!isMathematics && (
+                  <>
+                    <span className="flex items-center gap-2">
+                      <Icon name="file-text" size={16} color="#3B3F30" />
+                      {subject.pastPapers.length} Past Papers
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <Icon name="play-circle" size={16} color="#3B3F30" />
+                      {subject.resources.length} Interactive
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
