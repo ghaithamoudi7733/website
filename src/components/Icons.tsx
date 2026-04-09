@@ -317,6 +317,112 @@ const iconPaths: Record<string, React.ReactNode> = {
       <line x1="30" y1="50" x2="70" y2="50" />
       <polyline points="60,40 70,50 60,60" />
     </g>
+  ),
+  // Mathematical Watermarks for EmeraldMath-style cards
+  integral: (
+    <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M55 20 Q45 20 45 30 L45 70 Q45 80 55 80" />
+      <path d="M40 25 L30 25" />
+      <path d="M40 75 L30 75" />
+    </g>
+  ),
+  derivative: (
+    <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <text x="25" y="65" fontSize="35" fill="currentColor" stroke="none" fontStyle="italic">∂</text>
+      <path d="M65 25 L75 25" />
+      <line x1="70" y1="20" x2="70" y2="30" />
+      <line x1="65" y1="55" x2="75" y2="65" />
+    </g>
+  ),
+  sigma: (
+    <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="35,25 65,25 40,50 65,50 35,75 65,75" />
+    </g>
+  ),
+  infinity: (
+    <g stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M35 50 Q45 35 50 50 Q55 65 65 50 Q70 35 65 50 Q60 65 50 50 Q45 35 35 50" />
+    </g>
+  ),
+  distribution: (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 60 Q30 20 50 50 Q70 80 85 60" />
+      <line x1="15" y1="75" x2="85" y2="75" />
+      <line x1="50" y1="50" x2="50" y2="75" />
+    </g>
+  ),
+  "chi-square": (
+    <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <text x="30" y="65" fontSize="30" fill="currentColor" stroke="none" fontFamily="serif">χ²</text>
+    </g>
+  ),
+  velocity: (
+    <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <text x="20" y="60" fontSize="24" fill="currentColor" stroke="none" fontStyle="italic">v</text>
+      <path d="M50 40 L75 40" />
+      <polygon points="70,35 75,40 70,45" />
+      <line x1="50" y1="70" x2="75" y2="70" strokeDasharray="5,3" />
+    </g>
+  ),
+  acceleration: (
+    <g stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <text x="20" y="60" fontSize="24" fill="currentColor" stroke="none" fontStyle="italic">a</text>
+      <path d="M50 35 L80 35" />
+      <polygon points="75,30 80,35 75,40" />
+      <polygon points="75,55 80,60 75,65" />
+      <line x1="50" y1="60" x2="80" y2="60" />
+    </g>
+  ),
+  "chevron-right": (
+    <g stroke="currentColor" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="40,35 60,50 40,65" />
+    </g>
+  ),
+  "document-qp": (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="25" y="15" width="50" height="70" rx="3" />
+      <text x="50" y="45" fontSize="16" fill="currentColor" stroke="none" textAnchor="middle" fontWeight="bold">QP</text>
+      <line x1="30" y1="55" x2="70" y2="55" />
+      <line x1="30" y1="65" x2="60" y2="65" />
+    </g>
+  ),
+  snow: (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M50 20 L50 80" />
+      <path d="M20 50 L80 50" />
+      <path d="M28 28 L72 72" />
+      <path d="M72 28 L28 72" />
+      <circle cx="50" cy="50" r="8" />
+    </g>
+  ),
+  sun: (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="50" cy="50" r="15" />
+      <line x1="50" y1="20" x2="50" y2="10" />
+      <line x1="50" y1="80" x2="50" y2="90" />
+      <line x1="20" y1="50" x2="10" y2="50" />
+      <line x1="80" y1="50" x2="90" y2="50" />
+      <line x1="28" y1="28" x2="22" y2="22" />
+      <line x1="72" y1="72" x2="78" y2="78" />
+      <line x1="28" y1="72" x2="22" y2="78" />
+      <line x1="72" y1="28" x2="78" y2="22" />
+    </g>
+  ),
+  "document-ms": (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="25" y="15" width="50" height="70" rx="3" />
+      <text x="50" y="45" fontSize="16" fill="currentColor" stroke="none" textAnchor="middle" fontWeight="bold">MS</text>
+      <path d="M35 55 L45 65 L65 45" strokeWidth="2" />
+    </g>
+  ),
+  "document-notes": (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="25" y="15" width="50" height="70" rx="3" />
+      <text x="50" y="45" fontSize="12" fill="currentColor" stroke="none" textAnchor="middle" fontWeight="bold">NOTES</text>
+      <line x1="30" y1="55" x2="70" y2="55" />
+      <line x1="30" y1="62" x2="60" y2="62" />
+      <line x1="30" y1="69" x2="50" y2="69" />
+    </g>
   )
 };
 

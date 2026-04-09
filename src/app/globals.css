@@ -173,6 +173,17 @@ body {
   }
 }
 
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease forwards;
 }
@@ -183,6 +194,10 @@ body {
 
 .animate-slide-in {
   animation: slideIn 0.3s ease forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.3s ease forwards;
 }
 
 /* Subject Color Accents */
@@ -227,4 +242,44 @@ body {
   .section-padding {
     padding: var(--space-2xl) var(--space-md);
   }
+}
+
+/* Mathematics Module Grid Specific Styles */
+.math-grid-bg {
+  background-color: #F2E8CF;
+  background-image: radial-gradient(circle, #3B3F30 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Micro-dot pattern for EmeraldMath aesthetic */
+.micro-dot-grid {
+  background-image: radial-gradient(circle, rgba(59, 63, 48, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Gaussian blur effects */
+.gaussian-blur-olive {
+  background: radial-gradient(circle at 30% 20%, rgba(201, 184, 150, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(59, 63, 48, 0.1) 0%, transparent 50%);
+}
+
+/* Module Card hover scale effect */
+.module-card-hover {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.module-card-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 40px -12px rgba(59, 63, 48, 0.15);
+}
+
+/* Hide scrollbar for horizontal scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

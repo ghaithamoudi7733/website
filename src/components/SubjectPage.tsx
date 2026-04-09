@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Icon from "./Icons";
 import { type Subject } from "@/data/vault";
+import MathematicsModuleGrid, { ModuleModal } from "./MathematicsModuleGrid";
+import { type MathModule } from "@/data/mathematics";
 
 interface SubjectPageProps {
   subject: Subject;
@@ -11,6 +13,22 @@ interface SubjectPageProps {
 
 export default function SubjectPage({ subject }: SubjectPageProps) {
   const [activeTab, setActiveTab] = useState<"topics" | "papers" | "interactive">("topics");
+  const [selectedModule, setSelectedModule] = useState<MathModule | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Handle Mathematics module selection
+  const handleModuleSelect = (module: MathModule) => {
+    setSelectedModule(module);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedModule(null), 300);
+  };
+
+  // Check if this is the Mathematics subject
+  const isMathematics = subject.id === "mathematics";
 
   return (
     <main className="min-h-screen bg-warm-beige">
@@ -19,7 +37,7 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
         className="relative pt-32 lg:pt-40 pb-16 overflow-hidden"
         style={{ backgroundColor: `${subject.accentColor}08` }}
       >
-        {/* Decorative Elements */}
+        {/* Decorative Elements - EmeraldMath Style */}
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-20 right-[10%] w-64 h-64 rounded-full blur-3xl opacity-30"
@@ -28,6 +46,14 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
           <div
             className="absolute bottom-0 left-[5%] w-48 h-48 rounded-full blur-2xl opacity-20"
             style={{ backgroundColor: subject.accentColor }}
+          />
+          {/* Micro dot grid pattern for EmeraldMath aesthetic */}
+          <div 
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage: `radial-gradient(circle, ${subject.accentColor} 1px, transparent 1px)`,
+              backgroundSize: '24px 24px'
+            }}
           />
         </div>
 
@@ -62,11 +88,11 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
               <div className="flex flex-wrap gap-4 text-sm text-deep-olive/60">
                 <span className="flex items-center gap-2">
                   <Icon name="book" size={16} />
-                  {subject.topics.length} Topics
+                  {isMathematics ? 8 : subject.topics.length} {isMathematics ? "Modules" : "Topics"}
                 </span>
                 <span className="flex items-center gap-2">
                   <Icon name="file-text" size={16} />
-                  {subject.pastPapers.length} Past Papers
+                  {subject.pastPapers.length * (isMathematics ? 3 : 1)} Past Papers
                 </span>
                 <span className="flex items-center gap-2">
                   <Icon name="play-circle" size={16} />
@@ -83,7 +109,11 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-1 overflow-x-auto scrollbar-hide">
             {[
-              { id: "topics", label: "Topics & Notes", icon: "book" },
+              { 
+                id: "topics", 
+                label: isMathematics ? "Module Grid" : "Topics & Notes", 
+                icon: isMathematics ? "calculator" : "book" 
+              },
               { id: "papers", label: "Past Papers", icon: "file-text" },
               { id: "interactive", label: "Interactive", icon: "play-circle" },
             ].map((tab) => (
@@ -113,45 +143,61 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
       {/* Content Grid */}
       <section className="section-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Topics Tab */}
+          {/* Topics Tab - Shows EmeraldMath Grid for Mathematics */}
           {activeTab === "topics" && (
             <div className="animate-fade-in">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {subject.topics.map((topic, index) => (
-                  <div
-                    key={topic.id}
-                    className="glass rounded-xl p-6 card-hover group cursor-pointer"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-                        style={{ backgroundColor: `${subject.accentColor}20` }}
-                      >
-                        <Icon name={topic.icon} size={24} color={subject.accentColor} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-serif text-lg text-deep-olive mb-2 group-hover:text-deep-olive transition-colors duration-300">
-                          {topic.title}
-                        </h3>
-                        <p className="text-sm text-deep-olive/60 line-clamp-2">
-                          {topic.description}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs text-deep-olive/40 px-2 py-1 rounded bg-deep-olive/5">
-                        Notes
-                      </span>
-                      <Icon
-                        name="arrow"
-                        size={16}
-                        className="text-deep-olive/30 group-hover:text-deep-olive/60 transition-all duration-300 group-hover:translate-x-1"
-                      />
-                    </div>
+              {isMathematics ? (
+                <>
+                  <div className="mb-8">
+                    <h2 className="font-serif text-2xl text-deep-olive mb-2">
+                      Select a Module
+                    </h2>
+                    <p className="text-deep-olive/60 text-sm">
+                      Choose a module to access past papers and revision notes organized by exam series.
+                    </p>
                   </div>
-                ))}
-              </div>
+                  <MathematicsModuleGrid 
+                    onModuleSelect={handleModuleSelect}
+                  />
+                </>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {subject.topics.map((topic, index) => (
+                    <div
+                      key={topic.id}
+                      className="glass rounded-xl p-6 card-hover group cursor-pointer"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                          style={{ backgroundColor: `${subject.accentColor}20` }}
+                        >
+                          <Icon name={topic.icon} size={24} color={subject.accentColor} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-serif text-lg text-deep-olive mb-2 group-hover:text-deep-olive transition-colors duration-300">
+                            {topic.title}
+                          </h3>
+                          <p className="text-sm text-deep-olive/60 line-clamp-2">
+                            {topic.description}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-xs text-deep-olive/40 px-2 py-1 rounded bg-deep-olive/5">
+                          Notes
+                        </span>
+                        <Icon
+                          name="arrow"
+                          size={16}
+                          className="text-deep-olive/30 group-hover:text-deep-olive/60 transition-all duration-300 group-hover:translate-x-1"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -316,6 +362,15 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
           </div>
         </div>
       </section>
+
+      {/* Module Modal for Mathematics */}
+      {isMathematics && (
+        <ModuleModal
+          module={selectedModule}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        />
+      )}
     </main>
   );
 }
