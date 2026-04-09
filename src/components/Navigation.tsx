@@ -31,7 +31,7 @@ export default function Navigation({ onSearchClick }: NavigationProps) {
 
   const subjects = getAllSubjects();
   const scientific = subjects.filter(s => ["physics", "biology", "chemistry"].includes(s.id));
-  const technical = subjects.filter(s => ["mathematics", "information-technology"].includes(s.id));
+  const technical = subjects.filter(s => ["mathematics"].includes(s.id));
 
   return (
     <>
@@ -167,7 +167,7 @@ export default function Navigation({ onSearchClick }: NavigationProps) {
                 <div>
                   <h3 className="text-sm font-sans font-semibold tracking-wider text-deep-olive/60 uppercase mb-4 flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#C9B896]"></span>
-                    Technical & Logic
+                    Logic
                   </h3>
                   <ul className="space-y-1">
                     {technical.map((subject) => (
@@ -278,7 +278,7 @@ export default function Navigation({ onSearchClick }: NavigationProps) {
               <div>
                 <h3 className="text-xs font-sans font-semibold tracking-wider text-deep-olive/60 uppercase mb-3 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#C9B896]"></span>
-                  Technical & Logic
+                  Logic
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
                   {technical.map((subject) => (

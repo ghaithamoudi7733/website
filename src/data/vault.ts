@@ -9,6 +9,12 @@ export interface Topic {
   difficulty?: "beginner" | "intermediate" | "advanced";
 }
 
+export interface SubjectTheme {
+  primary: string;
+  light: string;
+  dark: string;
+}
+
 export interface Subject {
   id: string;
   name: string;
@@ -16,10 +22,35 @@ export interface Subject {
   description: string;
   accentColor: string;
   icon: string;
+  theme: SubjectTheme;
   topics: Topic[];
   pastPapers: Topic[];
   resources: Topic[];
 }
+
+// Subject Signature Colors
+export const SUBJECT_THEMES = {
+  mathematics: {
+    primary: "#8B0000",  // Crimson Red
+    light: "#FDECEA",     // Light Pink/Red tint
+    dark: "#5C0000"
+  },
+  biology: {
+    primary: "#0047AB",   // Royal Blue
+    light: "#EBF2FA",     // Light Blue tint
+    dark: "#003380"
+  },
+  chemistry: {
+    primary: "#6A0DAD",   // Royal Purple
+    light: "#F3E8FF",     // Light Purple tint
+    dark: "#4A087A"
+  },
+  physics: {
+    primary: "#2F4F4F",   // Slate Teal (Deep Olive/Dark Slate)
+    light: "#E8F0F0",     // Light Teal tint
+    dark: "#1F3535"
+  }
+} as const;
 
 export const vaultData = {
   subjects: [
@@ -28,8 +59,9 @@ export const vaultData = {
       name: "Physics",
       slug: "physics",
       description: "Classical mechanics, electromagnetism, thermodynamics, and quantum phenomena.",
-      accentColor: "#8B9D77",
+      accentColor: SUBJECT_THEMES.physics.primary,
       icon: "atom",
+      theme: SUBJECT_THEMES.physics,
       topics: [
         {
           id: "mechanics",
@@ -84,8 +116,9 @@ export const vaultData = {
       name: "Biology",
       slug: "biology",
       description: "Cellular biology, genetics, ecology, and human physiology.",
-      accentColor: "#A4B494",
+      accentColor: SUBJECT_THEMES.biology.primary,
       icon: "leaf",
+      theme: SUBJECT_THEMES.biology,
       topics: [
         {
           id: "cell-biology",
@@ -140,8 +173,9 @@ export const vaultData = {
       name: "Chemistry",
       slug: "chemistry",
       description: "Organic, inorganic, and physical chemistry principles.",
-      accentColor: "#9B8B7A",
+      accentColor: SUBJECT_THEMES.chemistry.primary,
       icon: "flask-conical",
+      theme: SUBJECT_THEMES.chemistry,
       topics: [
         {
           id: "organic",
@@ -196,8 +230,9 @@ export const vaultData = {
       name: "Mathematics",
       slug: "mathematics",
       description: "Pure mathematics, calculus, statistics, and applied mathematics.",
-      accentColor: "#C9B896",
+      accentColor: SUBJECT_THEMES.mathematics.primary,
       icon: "calculator",
+      theme: SUBJECT_THEMES.mathematics,
       topics: [
         {
           id: "algebra",
@@ -246,68 +281,12 @@ export const vaultData = {
         { id: "math-sim-2", title: "Equation Solver", description: "Step-by-step solution visualizer.", icon: "play-circle", type: "interactive" },
         { id: "math-sim-3", title: "Statistical Distributions", description: "Probability distribution explorer.", icon: "play-circle", type: "interactive" }
       ]
-    },
-    {
-      id: "information-technology",
-      name: "Information Technology",
-      slug: "information-technology",
-      description: "Programming, databases, networking, and systems analysis.",
-      accentColor: "#7A8B9D",
-      icon: "cpu",
-      topics: [
-        {
-          id: "programming",
-          title: "Programming",
-          description: "Algorithm design, data structures, and programming fundamentals.",
-          icon: "code",
-          type: "notes"
-        },
-        {
-          id: "databases",
-          title: "Database Systems",
-          description: "SQL, normalization, relational models, and DBMS concepts.",
-          icon: "database",
-          type: "notes"
-        },
-        {
-          id: "networking",
-          title: "Computer Networks",
-          description: "Network topologies, protocols, security, and architecture.",
-          icon: "network",
-          type: "notes"
-        },
-        {
-          id: "systems",
-          title: "Systems Analysis",
-          description: "SDLC, UML modeling, requirements analysis, and design patterns.",
-          icon: "workflow",
-          type: "notes"
-        },
-        {
-          id: "web-dev",
-          title: "Web Development",
-          description: "HTML, CSS, JavaScript, and modern web technologies.",
-          icon: "globe",
-          type: "notes"
-        }
-      ],
-      pastPapers: [
-        { id: "it-2024", title: "IT 2024", description: "Advanced Level Examination", icon: "file-text", type: "past_paper", date: "2024", difficulty: "advanced" },
-        { id: "it-2023", title: "IT 2023", description: "Advanced Level Examination", icon: "file-text", type: "past_paper", date: "2023", difficulty: "advanced" },
-        { id: "it-2022", title: "IT 2022", description: "Advanced Level Examination", icon: "file-text", type: "past_paper", date: "2022", difficulty: "advanced" },
-        { id: "it-2021", title: "IT 2021", description: "Advanced Level Examination", icon: "file-text", type: "past_paper", date: "2021", difficulty: "advanced" }
-      ],
-      resources: [
-        { id: "it-sim-1", title: "Code Runner", description: "Execute and debug code samples.", icon: "play-circle", type: "interactive" },
-        { id: "it-sim-2", title: "SQL Sandbox", description: "Practice database queries interactively.", icon: "play-circle", type: "interactive" },
-        { id: "it-sim-3", title: "Network Simulator", description: "Configure virtual networks.", icon: "play-circle", type: "interactive" }
-      ]
     }
   ] as Subject[],
   
   categories: {
     scientific: ["physics", "biology", "chemistry"],
-    technical: ["mathematics", "information-technology"]
+    technical: ["mathematics"]
   }
 };
 

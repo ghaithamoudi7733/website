@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Icon from "./Icons";
-import { type Subject } from "@/data/vault";
+import { type Subject, SUBJECT_THEMES } from "@/data/vault";
 import MathematicsModuleGrid, { ModuleModal } from "./MathematicsModuleGrid";
 import { type MathModule } from "@/data/mathematics";
 
@@ -35,6 +35,12 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
 
   // Check if this is the Mathematics subject
   const isMathematics = subject.id === "mathematics";
+
+  // Get subject theme
+  const subjectTheme = subject.id === "mathematics" ? SUBJECT_THEMES.mathematics :
+                       subject.id === "biology" ? SUBJECT_THEMES.biology :
+                       subject.id === "chemistry" ? SUBJECT_THEMES.chemistry :
+                       SUBJECT_THEMES.physics;
 
   // Build tabs based on subject type
   const getTabs = () => {
@@ -218,6 +224,7 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                   </div>
                   <MathematicsModuleGrid 
                     onModuleSelect={handleModuleSelect}
+                    theme={subjectTheme}
                   />
                 </>
               ) : (
@@ -430,16 +437,14 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
           >
             Related Subjects
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl">
             {[
-              { name: "Physics", color: "#8B9D77", icon: "atom", slug: "physics" },
-              { name: "Biology", color: "#A4B494", icon: "leaf", slug: "biology" },
-              { name: "Chemistry", color: "#9B8B7A", icon: "flask-conical", slug: "chemistry" },
-              { name: "Mathematics", color: "#C9B896", icon: "calculator", slug: "mathematics" },
-              { name: "IT", color: "#7A8B9D", icon: "cpu", slug: "information-technology" },
+              { name: "Physics", theme: SUBJECT_THEMES.physics, icon: "atom", slug: "physics" },
+              { name: "Biology", theme: SUBJECT_THEMES.biology, icon: "leaf", slug: "biology" },
+              { name: "Chemistry", theme: SUBJECT_THEMES.chemistry, icon: "flask-conical", slug: "chemistry" },
+              { name: "Mathematics", theme: SUBJECT_THEMES.mathematics, icon: "calculator", slug: "mathematics" },
             ]
               .filter((s) => s.slug !== subject.slug)
-              .slice(0, 4)
               .map((related) => (
                 <Link
                   key={related.slug}
@@ -448,9 +453,9 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                 >
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                    style={{ backgroundColor: `${related.color}20` }}
+                    style={{ backgroundColor: `${related.theme.primary}20` }}
                   >
-                    <Icon name={related.icon} size={20} color={related.color} />
+                    <Icon name={related.icon} size={20} color={related.theme.primary} />
                   </div>
                   <span 
                     className="font-semibold text-sm"
@@ -470,6 +475,7 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
           module={selectedModule}
           isOpen={isModalOpen}
           onClose={closeModal}
+          theme={subjectTheme}
         />
       )}
     </main>

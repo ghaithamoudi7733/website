@@ -423,6 +423,19 @@ const iconPaths: Record<string, React.ReactNode> = {
       <line x1="30" y1="62" x2="60" y2="62" />
       <line x1="30" y1="69" x2="50" y2="69" />
     </g>
+  ),
+  eye: (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M50 35 Q65 35 75 50 Q65 65 50 65 Q35 65 25 50 Q35 35 50 35" />
+      <circle cx="50" cy="50" r="8" />
+    </g>
+  ),
+  download: (
+    <g stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M50 25 L50 55" />
+      <polyline points="35,45 50,55 65,45" />
+      <path d="M35 65 L65 65" />
+    </g>
   )
 };
 

@@ -50,7 +50,7 @@ export default function Hero({ onSearchClick }: HeroProps) {
         <div className="text-center max-w-2xl mx-auto mb-12 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
           <p className="text-lg text-deep-olive/70 leading-relaxed">
             Premium academic resources for Physics, Biology, Chemistry, 
-            Mathematics, and Information Technology. Curated for excellence.
+            and Mathematics. Curated for excellence.
           </p>
         </div>
 
