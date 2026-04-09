@@ -18,12 +18,30 @@ const TEXT_DARK = "#2F3327";
 
 type TabType = "topics" | "papers" | "interactive";
 
-// Lazy load the graphing calculator for performance
+// Lazy load interactive tools for performance
 const LazyGraphingCalculator = dynamic(() => import("./GraphingCalculator"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-64">
-      <div className="animate-pulse text-deep-olive">Loading calculator...</div>
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.mathematics.primary }}>Loading calculator...</div>
+    </div>
+  )
+});
+
+const LazyEquationSolver = dynamic(() => import("./EquationSolver"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.mathematics.primary }}>Loading solver...</div>
+    </div>
+  )
+});
+
+const LazyStatisticalDistributions = dynamic(() => import("./StatisticalDistributions"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-pulse" style={{ color: SUBJECT_THEMES.mathematics.primary }}>Loading statistics...</div>
     </div>
   )
 });
@@ -50,12 +68,31 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
 
   // Handle interactive tool activation
   const activateTool = useCallback((toolId: string) => {
-    setActiveTool(toolId);
-  }, []);
+    // Only allow tool activation for mathematics subject
+    if (subject.id === "mathematics") {
+      setActiveTool(toolId);
+    }
+  }, [subject.id]);
 
   const deactivateTool = useCallback(() => {
     setActiveTool(null);
   }, []);
+  
+  // Get the active tool component
+  const renderActiveTool = () => {
+    if (subject.id !== "mathematics") return null;
+    
+    switch (activeTool) {
+      case "math-sim-1":
+        return <LazyGraphingCalculator theme={subjectTheme} isVisible={true} onClose={deactivateTool} />;
+      case "math-sim-2":
+        return <LazyEquationSolver theme={subjectTheme} isVisible={true} onClose={deactivateTool} />;
+      case "math-sim-3":
+        return <LazyStatisticalDistributions theme={subjectTheme} isVisible={true} onClose={deactivateTool} />;
+      default:
+        return null;
+    }
+  };
 
   // Get subject theme
   const subjectTheme = subject.id === "mathematics" ? SUBJECT_THEMES.mathematics :
@@ -398,27 +435,35 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
           {activeTab === "interactive" && (
             <div className="animate-fade-in">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {subject.resources.map((resource, index) => {
-                  const isGraphingCalculator = resource.id === "math-sim-1" && subject.id === "mathematics";
+                {subject.resources.map((resource) => {
+                  // Only clickable tools for mathematics
+                  const isClickable = subject.id === "mathematics";
                   
                   return (
                     <div
                       key={resource.id}
-                      onClick={() => isGraphingCalculator ? activateTool(resource.id) : undefined}
-                      className="glass rounded-xl overflow-hidden card-hover group cursor-pointer border border-[#3B3F30]/20"
+                      onClick={() => isClickable ? activateTool(resource.id) : undefined}
+                      className={`glass rounded-xl overflow-hidden card-hover border transition-all duration-300 ${
+                        isClickable ? "cursor-pointer group hover:shadow-xl" : ""
+                      }`}
+                      style={{ 
+                        borderColor: `${subjectTheme.primary}20`,
+                        borderWidth: "1px"
+                      }}
                     >
                       <div
                         className="h-40 flex items-center justify-center relative overflow-hidden"
-                        style={{ backgroundColor: `${subject.accentColor}15` }}
+                        style={{ backgroundColor: `${subjectTheme.primary}10` }}
                       >
+                        {/* Hover overlay with crimson tint */}
                         <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           style={{
-                            background: `linear-gradient(135deg, ${subject.accentColor}20, transparent)`,
+                            background: `linear-gradient(135deg, ${subjectTheme.primary}15, transparent)`,
                           }}
                         />
                         <div className="transition-transform duration-300 group-hover:scale-110">
-                          <Icon name={resource.icon} size={48} color={subject.accentColor} />
+                          <Icon name={resource.icon} size={48} color={subjectTheme.primary} />
                         </div>
                       </div>
                       <div className="p-6">
@@ -434,6 +479,14 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                         >
                           {resource.description}
                         </p>
+                        {isClickable && (
+                          <div className="mt-4 flex items-center gap-2 text-sm" style={{ color: subjectTheme.primary }}>
+                            <span className="font-semibold">Click to launch</span>
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: `${subjectTheme.primary}20` }}>
+                              <Icon name="arrow" size={12} color={subjectTheme.primary} />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -495,14 +548,8 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
         />
       )}
 
-      {/* Graphing Calculator - Full-screen tool with lazy loading */}
-      {activeTool === "math-sim-1" && isMathematics && (
-        <LazyGraphingCalculator
-          theme={subjectTheme}
-          isVisible={true}
-          onClose={deactivateTool}
-        />
-      )}
+      {/* Active Interactive Tool */}
+      {renderActiveTool()}
     </main>
   );
 }
