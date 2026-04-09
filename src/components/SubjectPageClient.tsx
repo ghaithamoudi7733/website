@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import Navigation from "@/components/Navigation";
-import Hero from "@/components/Hero";
-import SearchModal from "@/components/Search";
+import React, { useState, useEffect, useCallback } from "react";
+import Navigation from "./Navigation";
+import SubjectPage from "./SubjectPage";
+import SearchModal from "./Search";
+import { type Subject } from "@/data/vault";
 
-export default function Home() {
+interface SubjectPageClientProps {
+  subject: Subject;
+}
+
+export default function SubjectPageClient({ subject }: SubjectPageClientProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -23,7 +28,7 @@ export default function Home() {
   return (
     <>
       <Navigation onSearchClick={() => setIsSearchOpen(true)} />
-      <Hero onSearchClick={() => setIsSearchOpen(true)} />
+      <SubjectPage subject={subject} />
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );

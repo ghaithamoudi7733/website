@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Logic Vault
+
+A premium educational platform serving as a centralized repository for academic resources across Physics, Biology, Chemistry, Information Technology, and Mathematics.
+
+## Design Philosophy
+
+Logic Vault employs an "Organic Professional" aesthetic with a sophisticated color palette:
+- **Primary:** Deep Olive (#3B3F30) - evoking academic authority
+- **Secondary:** Warm Beige (#F5F5DC) - reducing cognitive load for students
+- **Accent:** Muted Gold (#C9B896) - premium visual hierarchy
+
+The UI features refined glassmorphism effects, generous whitespace, and elegant typography pairing Playfair Display (serif) with Inter (sans-serif).
+
+## Subjects Covered
+
+### Scientific Sciences
+- **Physics** - Classical mechanics, electromagnetism, thermodynamics, optics, quantum mechanics
+- **Biology** - Cell biology, genetics, ecology, human physiology, evolution
+- **Chemistry** - Organic, inorganic, physical, analytical, biochemistry
+
+### Technical & Logic
+- **Mathematics** - Algebra, calculus, geometry, trigonometry, statistics
+- **Information Technology** - Programming, databases, networking, systems analysis, web development
+
+## Features
+
+### The Repository
+- **Notes Vault** - Comprehensive topic-based notes with standardized layouts
+- **Past Papers** - Archive of examination papers with difficulty indicators
+- **Interactive Tools** - Simulators and calculators for hands-on learning
+
+### UX Excellence
+- Global search with ⌘K/Ctrl+K keyboard shortcut
+- Glassmorphism navigation with mega-menu organization
+- Responsive design (desktop triple-column → mobile single-column)
+- Subtle 0.3s eased animations maintaining premium feel
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Styling:** Tailwind CSS v4 with custom design tokens
+- **Typography:** Playfair Display + Inter (Google Fonts)
+- **Icons:** Custom SVG icon system
+- **Data:** JSON-structured CMS layer for easy content management
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the vault.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   │   ├── subject/[slug]/   # Dynamic subject pages
+│   │   ├── notes/            # Notes repository
+│   │   └── page.tsx          # Homepage
+│   ├── components/       # React components
+│   │   ├── Navigation.tsx    # Glassmorphism header
+│   │   ├── Hero.tsx          # Landing section
+│   │   ├── Search.tsx        # Global search modal
+│   │   ├── SubjectPage.tsx   # Subject detail layout
+│   │   └── Icons.tsx          # SVG icon system
+│   └── data/
+│       └── vault.ts      # CMS data layer (subjects, topics, papers)
+├── dist/                 # Static export output
+└── README.md
+```
 
-## Learn More
+## Content Management
 
-To learn more about Next.js, take a look at the following resources:
+To add new topics or resources, edit `src/data/vault.ts`. The modular structure allows injection of new content without rewriting components.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is configured for static export (`output: 'export'`). The `dist/` folder contains deployable HTML files.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built for academic excellence. Curated for students.
