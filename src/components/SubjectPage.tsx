@@ -100,26 +100,22 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
                        subject.id === "chemistry" ? SUBJECT_THEMES.chemistry :
                        SUBJECT_THEMES.physics;
 
-  // Build tabs based on subject type
+  // Build tabs - only Topics and Interactive (no Past Papers)
   const getTabs = () => {
-    const baseTabs: Array<{ id: TabType; label: string; icon: string }> = [
+    const tabs: Array<{ id: TabType; label: string; icon: string }> = [
       { 
         id: "topics", 
         label: isMathematics ? "Module Grid" : "Topics & Notes", 
         icon: isMathematics ? "calculator" : "book" 
       },
+      { 
+        id: "interactive", 
+        label: "Interactive Tools", 
+        icon: "play-circle" 
+      },
     ];
     
-    // Only add "Past Papers" tab for non-Mathematics subjects
-    // (Mathematics papers are accessed inside modules via modal)
-    if (!isMathematics) {
-      baseTabs.push({ id: "papers", label: "Past Papers", icon: "file-text" });
-    }
-    
-    // Always add Interactive
-    baseTabs.push({ id: "interactive", label: "Interactive", icon: "play-circle" });
-    
-    return baseTabs;
+    return tabs;
   };
 
   const tabs = getTabs();
@@ -333,103 +329,7 @@ export default function SubjectPage({ subject }: SubjectPageProps) {
             </div>
           )}
 
-          {/* Papers Tab - Only for non-Mathematics subjects */}
-          {activeTab === "papers" && !isMathematics && (
-            <div className="animate-fade-in">
-              <div className="glass rounded-xl overflow-hidden border border-[#3B3F30]/20">
-                <table className="w-full">
-                  <thead className="bg-cream border-b border-[#3B3F30]/10">
-                    <tr>
-                      <th 
-                        className="text-left px-6 py-4 text-sm font-bold"
-                        style={{ color: TEXT_DARK }}
-                      >
-                        Paper
-                      </th>
-                      <th 
-                        className="text-left px-6 py-4 text-sm font-bold"
-                        style={{ color: TEXT_DARK }}
-                      >
-                        Year
-                      </th>
-                      <th 
-                        className="text-left px-6 py-4 text-sm font-bold"
-                        style={{ color: TEXT_DARK }}
-                      >
-                        Difficulty
-                      </th>
-                      <th 
-                        className="text-right px-6 py-4 text-sm font-bold"
-                        style={{ color: TEXT_DARK }}
-                      >
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {subject.pastPapers.map((paper, index) => (
-                      <tr
-                        key={paper.id}
-                        className="border-b border-[#3B3F30]/10 last:border-b-0 hover:bg-[#3B3F30]/5 transition-colors duration-200"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <Icon
-                              name="file-text"
-                              size={20}
-                              color={subject.accentColor}
-                            />
-                            <span 
-                              className="font-semibold"
-                              style={{ color: TEXT_DARK }}
-                            >
-                              {paper.title}
-                            </span>
-                          </div>
-                          <span 
-                            className="text-xs block mt-1 font-medium"
-                            style={{ color: "rgba(47, 51, 39, 0.6)" }}
-                          >
-                            {paper.description}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span 
-                            className="text-sm font-medium"
-                            style={{ color: "rgba(47, 51, 39, 0.8)" }}
-                          >
-                            {paper.date}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className="text-xs px-2 py-1 rounded-full font-semibold"
-                            style={{
-                              backgroundColor: `${subject.accentColor}20`,
-                              color: subject.accentColor,
-                            }}
-                          >
-                            {paper.difficulty}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:opacity-90"
-                            style={{
-                              backgroundColor: "#3B3F30",
-                              color: "white",
-                            }}
-                          >
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+
 
           {/* Interactive Tab */}
           {activeTab === "interactive" && (

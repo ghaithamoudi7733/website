@@ -71,36 +71,38 @@ export default function Hero({ onSearchClick }: HeroProps) {
           </button>
         </div>
 
-        {/* Subject Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
-          {subjects.map((subject, index) => (
-            <Link
-              key={subject.id}
-              href={`/subject/${subject.slug}`}
-              className="group relative"
-              style={{ animationDelay: `${0.5 + index * 0.1}s` }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-muted-gold/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative glass rounded-2xl p-6 card-hover h-full flex flex-col items-center text-center">
-                <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${subject.accentColor}20` }}
-                >
-                  <Icon
-                    name={subject.icon}
-                    size={32}
-                    color={subject.accentColor}
-                  />
+        {/* Subject Cards Grid - Centered */}
+        <div className="flex justify-center animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {subjects.map((subject, index) => (
+              <Link
+                key={subject.id}
+                href={`/subject/${subject.slug}`}
+                className="group relative"
+                style={{ animationDelay: `${0.5 + index * 0.1}s` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-muted-gold/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative glass rounded-2xl p-6 card-hover h-full flex flex-col items-center text-center" style={{ minWidth: "180px" }}>
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
+                    style={{ backgroundColor: `${subject.accentColor}20` }}
+                  >
+                    <Icon
+                      name={subject.icon}
+                      size={32}
+                      color={subject.accentColor}
+                    />
+                  </div>
+                  <h3 className="font-serif text-lg text-deep-olive mb-2 group-hover:text-deep-olive transition-colors duration-300">
+                    {subject.name}
+                  </h3>
+                  <p className="text-xs text-deep-olive/50 line-clamp-2">
+                    {subject.topics.length} topics
+                  </p>
                 </div>
-                <h3 className="font-serif text-lg text-deep-olive mb-2 group-hover:text-deep-olive transition-colors duration-300">
-                  {subject.name}
-                </h3>
-                <p className="text-xs text-deep-olive/50 line-clamp-2">
-                  {subject.topics.length} topics
-                </p>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* Stats Bar */}

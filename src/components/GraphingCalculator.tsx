@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Icon from "./Icons";
 import { SUBJECT_THEMES, type SubjectTheme } from "@/data/vault";
+import Tutorial from "./Tutorial";
+import type { TutorialStep } from "./Tutorial";
 
 interface GraphingCalculatorProps {
   theme?: SubjectTheme;
@@ -31,6 +33,33 @@ const PRESETS = [
 const TEXT_DARK = "#2F3327";
 const BG_COLOR = "#F2E8CF";
 
+// Tutorial steps for the graphing calculator
+const TUTORIAL_STEPS: TutorialStep[] = [
+  {
+    title: "Plot Functions",
+    description: "Enter any mathematical function using x as the variable. Try presets like Quadratic, Sine, or Exponential to get started quickly.",
+    icon: "trending-up",
+    highlight: "Type y = x^2 and click Add"
+  },
+  {
+    title: "Navigate the Graph",
+    description: "Click and drag on the canvas to pan around. Use the + and - buttons in the top-right to zoom in and out.",
+    icon: "move",
+    highlight: "Drag to pan • Click + to zoom"
+  },
+  {
+    title: "Manage Functions",
+    description: "Toggle visibility with the eye icon, or delete functions with the X. You can plot multiple functions at once with different colors.",
+    icon: "eye",
+    highlight: "Plot up to 10 functions simultaneously"
+  },
+  {
+    title: "Supported Operations",
+    description: "Use standard math: +, -, *, /, ^ for powers. Functions include: sin(), cos(), tan(), log(), sqrt(), abs(), and constants like pi and e.",
+    icon: "function"
+  }
+];
+
 export default function GraphingCalculator({ 
   theme = SUBJECT_THEMES.mathematics, 
   onClose,
@@ -45,6 +74,8 @@ export default function GraphingCalculator({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 500 });
+  const animationFrameRef = useRef<number | null>(null);
+  const lastPanTime = useRef<number>(0);
 
   // Math expression parser
   const evaluateExpression = (expr: string, x: number): number | null => {
@@ -72,20 +103,25 @@ export default function GraphingCalculator({
     }
   };
 
-  // Draw the graph
+  // Smooth drawing with requestAnimationFrame
   const drawGraph = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    
+    animationFrameRef.current = requestAnimationFrame(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    const { width, height } = canvas;
-    const { xMin, xMax, yMin, yMax } = viewBox;
+      const { width, height } = canvas;
+      const { xMin, xMax, yMin, yMax } = viewBox;
 
-    // Clear canvas with Oxford Beige background
-    ctx.fillStyle = BG_COLOR;
-    ctx.fillRect(0, 0, width, height);
+      // Clear canvas with Oxford Beige background
+      ctx.fillStyle = BG_COLOR;
+      ctx.fillRect(0, 0, width, height);
 
     // Calculate scales
     const xScale = width / (xMax - xMin);
@@ -178,40 +214,41 @@ export default function GraphingCalculator({
       ctx.stroke();
     });
 
-    // Draw axis labels
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = "#3B3F30";
-    ctx.font = "12px Inter, sans-serif";
-    ctx.textAlign = "center";
+      // Draw axis labels
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = "#3B3F30";
+      ctx.font = "12px Inter, sans-serif";
+      ctx.textAlign = "center";
 
-    // X-axis labels
-    for (let x = Math.floor(xMin); x <= xMax; x++) {
-      if (x === 0) continue;
-      const canvasX = toCanvasX(x);
-      if (canvasX >= 20 && canvasX <= width - 20) {
-        const yPos = toCanvasY(0);
-        const labelY = yPos >= height - 20 ? height - 10 : (yPos <= 20 ? 20 : yPos + 15);
-        ctx.fillText(x.toString(), canvasX, labelY);
+      // X-axis labels
+      for (let x = Math.floor(xMin); x <= xMax; x++) {
+        if (x === 0) continue;
+        const canvasX = toCanvasX(x);
+        if (canvasX >= 20 && canvasX <= width - 20) {
+          const yPos = toCanvasY(0);
+          const labelY = yPos >= height - 20 ? height - 10 : (yPos <= 20 ? 20 : yPos + 15);
+          ctx.fillText(x.toString(), canvasX, labelY);
+        }
       }
-    }
 
-    // Y-axis labels
-    ctx.textAlign = "right";
-    for (let y = Math.floor(yMin); y <= yMax; y++) {
-      if (y === 0) continue;
-      const canvasY = toCanvasY(y);
-      if (canvasY >= 20 && canvasY <= height - 20) {
-        const xPos = toCanvasX(0);
-        const labelX = xPos <= 30 ? 35 : (xPos >= width - 30 ? width - 10 : xPos - 10);
-        ctx.fillText(y.toString(), labelX, canvasY + 4);
+      // Y-axis labels
+      ctx.textAlign = "right";
+      for (let y = Math.floor(yMin); y <= yMax; y++) {
+        if (y === 0) continue;
+        const canvasY = toCanvasY(y);
+        if (canvasY >= 20 && canvasY <= height - 20) {
+          const xPos = toCanvasX(0);
+          const labelX = xPos <= 30 ? 35 : (xPos >= width - 30 ? width - 10 : xPos - 10);
+          ctx.fillText(y.toString(), labelX, canvasY + 4);
+        }
       }
-    }
 
-    // Origin label
-    if (toCanvasX(0) > 20 && toCanvasY(0) < height - 20) {
-      ctx.textAlign = "left";
-      ctx.fillText("0", toCanvasX(0) + 5, toCanvasY(0) - 5);
-    }
+      // Origin label
+      if (toCanvasX(0) > 20 && toCanvasY(0) < height - 20) {
+        ctx.textAlign = "left";
+        ctx.fillText("0", toCanvasX(0) + 5, toCanvasY(0) - 5);
+      }
+    });
   }, [functions, viewBox, canvasSize]);
 
   // Redraw on changes
@@ -221,20 +258,37 @@ export default function GraphingCalculator({
     }
   }, [drawGraph, isVisible]);
 
-  // Handle window resize
+  // Handle window resize with debouncing for smooth performance
   useEffect(() => {
+    let resizeTimeout: NodeJS.Timeout;
+    
     const handleResize = () => {
-      const container = document.getElementById("graph-container");
-      if (container) {
-        const rect = container.getBoundingClientRect();
-        setCanvasSize({ width: rect.width, height: rect.height });
-      }
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const container = document.getElementById("graph-container");
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          setCanvasSize({ width: rect.width, height: rect.height });
+        }
+      }, 100);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimeout);
+    };
   }, [isVisible]);
+
+  // Cleanup animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
 
   // Add new function
   const addFunction = () => {
@@ -305,17 +359,26 @@ export default function GraphingCalculator({
     });
   };
 
-  // Pan handlers
+  // Smooth pan handlers with throttling
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
+    lastPanTime.current = performance.now();
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
     
+    // Throttle to ~60fps for smooth performance
+    const now = performance.now();
+    if (now - lastPanTime.current < 16) return;
+    lastPanTime.current = now;
+    
     const dx = e.clientX - dragStart.x;
     const dy = e.clientY - dragStart.y;
+    
+    // Skip small movements
+    if (Math.abs(dx) < 2 && Math.abs(dy) < 2) return;
     
     const { width, height } = canvasSize;
     const { xMin, xMax, yMin, yMax } = viewBox;
@@ -323,12 +386,12 @@ export default function GraphingCalculator({
     const xScale = (xMax - xMin) / width;
     const yScale = (yMax - yMin) / height;
     
-    setViewBox({
-      xMin: xMin - dx * xScale,
-      xMax: xMax - dx * xScale,
-      yMin: yMin + dy * yScale,
-      yMax: yMax + dy * yScale
-    });
+    setViewBox(prev => ({
+      xMin: prev.xMin - dx * xScale,
+      xMax: prev.xMax - dx * xScale,
+      yMin: prev.yMin + dy * yScale,
+      yMax: prev.yMax + dy * yScale
+    }));
     
     setDragStart({ x: e.clientX, y: e.clientY });
   };
@@ -340,15 +403,23 @@ export default function GraphingCalculator({
   if (!isVisible) return null;
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex animate-fade-in"
-      style={{ backgroundColor: "rgba(26, 28, 22, 0.5)" }}
-    >
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0" 
-        onClick={onClose}
+    <>
+      <Tutorial
+        toolName="Graphing Calculator"
+        steps={TUTORIAL_STEPS}
+        theme={theme}
+        isVisible={isVisible}
+        onComplete={() => {}}
       />
+      <div 
+        className="fixed inset-0 z-50 flex animate-fade-in"
+        style={{ backgroundColor: "rgba(26, 28, 22, 0.5)" }}
+      >
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0" 
+          onClick={onClose}
+        />
 
       {/* Main Container */}
       <div 
@@ -595,5 +666,6 @@ export default function GraphingCalculator({
         </div>
       </div>
     </div>
+    </>
   );
 }
